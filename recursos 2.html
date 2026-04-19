@@ -1,0 +1,144 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel Inteligente</title>
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #0f172a;
+        color: #fff;
+    }
+
+    header {
+        text-align: center;
+        padding: 15px;
+        background: #1e293b;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    nav {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        padding: 10px;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 20px;
+        background: linear-gradient(135deg, #3b82f6, #06b6d4);
+        color: white;
+        cursor: pointer;
+    }
+
+    .container {
+        padding: 20px;
+        text-align: center;
+    }
+
+    .card {
+        background: #1e293b;
+        padding: 20px;
+        border-radius: 15px;
+        display: inline-block;
+        min-width: 250px;
+    }
+
+    footer {
+        text-align: center;
+        padding: 10px;
+        font-size: 12px;
+        color: #94a3b8;
+    }
+</style>
+</head>
+
+<body>
+
+<header>
+    🌐 Painel Inteligente (API)
+</header>
+
+<nav>
+    <button class="btn" onclick="buscarClima()">🌦 Clima</button>
+    <button class="btn" onclick="buscarDolar()">💵 Dólar</button>
+</nav>
+
+<div class="container">
+    <div id="resultado" class="card">
+        Clique em um serviço acima
+    </div>
+</div>
+
+<footer id="info">
+    Dados em tempo real via API
+</footer>
+
+<script>
+const apiKey = "5d5d01c3b15531b9cbb043f8ee730e1e";
+
+// CLIMA
+async function buscarClima() {
+    const cidade = "Rio de Janeiro";
+
+    try {
+        const res = await fetch(
+            `https://api.openweathermap.org/data/2.5/weather?q=${cidade}&appid=${apiKey}&units=metric&lang=pt_br`
+        );
+        const data = await res.json();
+
+        document.getElementById("resultado").innerHTML = `
+            <h2>🌦 Clima em ${data.name}</h2>
+            <p>Temperatura: <b>${data.main.temp}°C</b></p>
+            <p>Sensação: ${data.main.feels_like}°C</p>
+            <p>Condição: ${data.weather[0].description}</p>
+        `;
+
+        document.getElementById("info").innerText =
+            "Fonte: OpenWeather API";
+
+    } catch (erro) {
+        document.getElementById("resultado").innerHTML =
+            "Erro ao buscar clima.";
+    }
+}
+
+// DÓLAR (Banco Central)
+async function buscarDolar() {
+    try {
+        const res = await fetch(
+            "https://economia.awesomeapi.com.br/json/last/USD-BRL"
+        );
+        const data = await res.json();
+
+        const dolar = data.USDBRL;
+
+        document.getElementById("resultado").innerHTML = `
+            <h2>💵 Dólar Hoje</h2>
+            <p>Compra: <b>R$ ${parseFloat(dolar.bid).toFixed(2)}</b></p>
+            <p>Venda: R$ ${parseFloat(dolar.ask).toFixed(2)}</p>
+            <p>Alta: R$ ${parseFloat(dolar.high).toFixed(2)}</p>
+            <p>Baixa: R$ ${parseFloat(dolar.low).toFixed(2)}</p>
+        `;
+
+        document.getElementById("info").innerText =
+            "Fonte: Dados de câmbio em tempo real";
+
+    } catch (erro) {
+        document.getElementById("resultado").innerHTML =
+            "Erro ao buscar dólar.";
+    }
+}
+</script>
+
+</body>
+</html>
+
+
